@@ -12,13 +12,13 @@ dr.manage.timeouts.page_load = 100
 url="http://edx.org"
 
 # fill in your account here
-account_email = 'liupengcheng@xuetangx.com'
-account_password = 'xuetangX'
+account_email = ''
+account_password = ''
 
 # before calling this function, dr should be course list page
 def register_one_course(dr, page_num, idx_in_page)
     if page_num == 0
-	    page_url="https://www.edx.org/course-list"
+        page_url="https://www.edx.org/course-list"
     else
         page_url="https://www.edx.org/course-list?page=#{page_num}"
     end
@@ -33,15 +33,15 @@ def register_one_course(dr, page_num, idx_in_page)
     dr.switch_to.frame dr.find_elements(:xpath, '//iframe[contains(@class, "iframe-register")]')[0]
     registerlink=dr.find_elements(:xpath, '//a[contains(text(), "Register for")]')
     if registerlink[0].nil? != true
-	    registerlink[0].click
-	    p "click register"
-	    sleep 3
+        registerlink[0].click
+        p "click register"
+        sleep 3
 
-	    # may still need to select track, by default use audit mode
-	    audit=dr.find_elements(:xpath, '//input[@name="audit_mode"]')[0]
+	# may still need to select track, by default use audit mode
+        audit=dr.find_elements(:xpath, '//input[@name="audit_mode"]')[0]
         if audit.nil? != true
-		    audit.click
-			sleep 3
+            audit.click
+            sleep 3
         end
     else
         p "cannot find register link, go back to course list"
@@ -91,7 +91,7 @@ courses.each {|c|
     p "registered course cnt : #{registered_course_cnt}"
 
     if register_one_course(dr, page_cnt, idx_in_current_page)
-	    registered_course_cnt += 1
+        registered_course_cnt += 1
     end
 
     idx_in_current_page += 1
@@ -107,20 +107,17 @@ while nextpagelink[0].nil? != true do
     courses=dr.find_elements(:xpath, '//a[contains(@href, "www.edx.org/course/")]')
     idx_in_current_page=0
     courses.each {|c|
-	    p "course cnt : #{course_cnt}"
-	    p "registered course cnt : #{registered_course_cnt}"
+        p "course cnt : #{course_cnt}"
+        p "registered course cnt : #{registered_course_cnt}"
 	    
         if register_one_course(dr, page_cnt, idx_in_current_page)
-	        registered_course_cnt += 1
+            registered_course_cnt += 1
         end
-
-	    idx_in_current_page += 1
-	    course_cnt += 1
+        idx_in_current_page += 1
+        course_cnt += 1
     }
 
     # go back to course list of current page
     dr.get "https://www.edx.org/course-list?page=#{page_cnt}"
     nextpagelink=dr.find_elements(:xpath, '//a[contains(text(), "next")]')
 end
-
-exit 0
