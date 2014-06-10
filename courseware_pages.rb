@@ -28,30 +28,21 @@ $course_page_dir="C:/Users/pcliu/Downloads/ruby/data"
 def download_one_course(dr, c_url)
     tmp_url=String.new(c_url)
     tmp_url["https://courses.edx.org/courses/"]=""
-	tmp_url["/info"]=""
-	cname = tmp_url.gsub(/\//, "-")
+    tmp_url["/info"]=""
+    cname = tmp_url.gsub(/\//, "-")
 
     data_dir="#{$course_page_dir}/#{cname}"
-	p "data dir #{data_dir}"
+    p "data dir #{data_dir}"
     FileUtils.mkdir_p data_dir
     
-	if File.file?("#{data_dir}/done")
-	    p "skip course #{cname}"
-	    return
-	end
+    if File.file?("#{data_dir}/done")
+        p "skip course #{cname}"
+        return
+    end
 
     # go to course page
-	p "navigate to #{c_url}"
+    p "navigate to #{c_url}"
     dr.navigate.to c_url
-
-	# go to course page
-	#p cname
-	#query_str = "//a[text()=\"#{cname}\"]"
-	#p query_str
-	#courselink=dr.find_elements(:xpath, query_str)
-    #courselink[0].click
-
-    #sleep 5
 
     courseware=dr.find_elements(:xpath, '//a[contains(text(),"Courseware")]')
     courseware[0].click
@@ -63,15 +54,15 @@ def download_one_course(dr, c_url)
     texts = []
     links=dr.find_elements(:xpath,'//a')
     links.each { |l|
-    url = l.attribute("href")
-    if url =~ /.*courseware.*/
-        urls << url
-        texts << l.attribute("text")
-        p cnt
-        p l.attribute("href")
-        p l.attribute("text")
-        cnt += 1
-    end
+        url = l.attribute("href")
+        if url =~ /.*courseware.*/
+            urls << url
+            texts << l.attribute("text")
+            p cnt
+            p l.attribute("href")
+            p l.attribute("text")
+            cnt += 1
+        end
     }
 
     cnt = 0
@@ -95,7 +86,7 @@ def download_one_course(dr, c_url)
 
     # create finish flag for this course
     done_file = File.new("#{data_dir}/done", "w")
-	done_file.close
+    done_file.close
 end
 
 login_url="https://courses.edx.org/login"
@@ -119,7 +110,7 @@ open_course_urls=[]
 p "open course #{course_cnt}"
 course_links.each {|c|
     c_url=c.attribute("href")
-	open_course_urls << c_url
+    open_course_urls << c_url
 }
 
 archived_course_links=dr.find_elements(:xpath, '//a[@class="enter-course archived"]')
@@ -128,7 +119,7 @@ archived_course_urls=[]
 p "archived course #{archived_course_cnt}"
 archived_course_links.each {|c|
     c_url=c.attribute("href")
-	archived_course_urls << c_url
+    archived_course_urls << c_url
 }
 
 open_course_urls.each{|u|
